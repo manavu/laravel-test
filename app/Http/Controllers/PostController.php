@@ -7,6 +7,14 @@ use App\Post;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        // 認証ありのコントローラー
+        $this->middleware('auth');
+        // 認証なしのコントローラーだが、特定のアクションは除外
+        // $this->middleware('guest')->except('create');
+    }
+
     public function index()
     {
         // DBよりpostsテーブルの値を全て取得
