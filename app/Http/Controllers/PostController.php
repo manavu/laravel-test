@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Post;
+use App\Attachment;
 
 class PostController extends Controller
 {
@@ -45,14 +47,40 @@ class PostController extends Controller
         // form ファサードを使うと、old ヘルパーを使わないでも以前の値がレンダリングされるっぽい
         $this->validate($request, $validateRules, $validateMessages);
 
-        // モデルからインスタンスを生成
-        $post = new Post;
+        /*      
+        // こういうやり方もあるっぽい
+        // バリデーターにルールとインプットを入れる
+        $validation = Validator::make($request, $rules);
 
-        // $requestにformからのデータが格納されているので、以下のようにそれぞれ代入する
-        $post->context = $request->context;
+        // バリデーションチェックを行う
+        if ($validation->fails()) {
+            return redirect('/')->with('message', 'ファイルを確認してください！');
+        }
+ */
+        DB::transaction(function () use ($request) {
+            // モデルからインスタンスを生成
+            $post = new Post;
 
-        // 保存
-        $post->save();
+            // $requestにformからのデータが格納されているので、以下のようにそれぞれ代入する
+            $post->context = $request->context;
+
+            // 保存
+            $post->save();
+
+            foreach ($request->files as $file) {
+                $attachment = new Attachment();
+                $attachment->data = $file;
+                $attachment->name = $file->getClientOriginalName();
+                $attachment->contentType = $file->getClientMimeType();  // mimeType は直接アクセスできない
+                $attachment->size = $file->getClientSize();
+                $attachment->postId = $post->id;
+
+                $attachment->save();
+            }
+
+            // transaction メソッドの戻り値として返すことができる
+            // return $value;
+        });
 
         // 保存後 一覧ページへリダイレクト
         return redirect('/post');
@@ -79,8 +107,17 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $post = Post::find($id);
-        $post->delete();
+        DB::transaction(function () use ($id) {
+            $post = Post::find($id);
+
+            // EF みたいに勝手にやってくれないので、モデル側のトリガーで定義するか、 DB でカスケードの設定をするとよいかも
+            foreach ($post->attachments()->get() as $attachment) {
+                // foreach ($post->attachments() as $attachment) {  // こっちだとダメだった。なぜ？
+                $attachment->delete();
+            }
+
+            $post->delete();
+        });
 
         // 一覧にリダイレクト
         return redirect('/post');

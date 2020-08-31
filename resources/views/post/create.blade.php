@@ -13,7 +13,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['url' => 'post', 'method' => 'post']) !!}
+            {!! Form::open(['url' => 'post', 'method' => 'post', 'files' => true]) !!}
             <div class="form-group">
                 {!! Form::label('context', '内容:') !!}
                 {!! Form::text('context', '', ['class' => 'form-control', 'placeholder' => ''] ) !!}
@@ -21,6 +21,8 @@
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
+            {!! Form::file('image') !!}
+
             {!! Form::submit('作成', ['class' => 'btn btn-primary btn-block']) !!}
             {!! Form::close() !!}
         </div>

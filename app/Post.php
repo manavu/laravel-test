@@ -12,4 +12,12 @@ class Post extends Model
     protected $guarded = [
         'id'
     ];
+
+    /**
+     * アタッチメントを取得
+     */
+    public function attachments()
+    {
+        return $this->hasMany('App\Attachment');
+    }
 }

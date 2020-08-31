@@ -21,6 +21,11 @@
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
             </div>
+            @foreach ($post->attachments()->get() as $attachment)
+            <div>
+                {{ Html::linkAction('AttachmentController@show', $attachment->name, [$attachment->id]) }}
+            </div>
+            @endforeach
             {!! Form::submit('更新', ['class' => 'btn btn-primary btn-block']) !!}
             {!! Form::close() !!}
         </div>

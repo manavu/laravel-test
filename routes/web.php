@@ -27,6 +27,8 @@ Route::get('/post/{id}', 'PostController@edit');
 Route::put('/post/{id}', 'PostController@update');
 Route::delete('/post/{id}', 'PostController@destroy');
 
+Route::get('/Attachment/{id}', 'AttachmentController@show');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
