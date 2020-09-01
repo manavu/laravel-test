@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Post;
 use App\Attachment;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -28,7 +29,9 @@ class PostController extends Controller
 
     public function create()
     {
-        return view('post/create');
+        $tags = Tag::list()->pluck('name', 'id');
+
+        return view('post/create', compact('tags'));
     }
 
     public function store(Request $request)
@@ -76,7 +79,16 @@ class PostController extends Controller
                 $attachment->postId = $post->id;
 
                 $attachment->save();
+                // $post->attachments()->save($attachment);
+                // $post->attachments()->saveMany([$attachment]);
             }
+
+            $tagIds = array_filter($request->tags, function ($tagId) {
+                return !is_null($tagId);
+            });
+
+            // タグの関連を結ぶ。要素にないものは削除される
+            $post->tags()->sync($tagIds);
 
             // transaction メソッドの戻り値として返すことができる
             // return $value;
@@ -89,17 +101,28 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
+        $tags = Tag::list()->pluck('name', 'id');
 
-        return view('post/edit', ['post' => $post]);
+        return view('post/edit', ['post' => $post, 'tags' => $tags]);
     }
 
     public function update(Request $request, $id)
     {
         // バリデーションを共有するための方法を考える必要がある
+        DB::transaction(function () use ($request, $id) {
+            $post = Post::find($id);
+            $post->context = $request->context;
+            $post->save();
 
-        $post = Post::find($id);
-        $post->context = $request->context;
-        $post->save();
+            $tagIds = array_filter($request->tags, function ($tagId) {
+                return !is_null($tagId);
+            });
+
+            // タグの関連を結ぶ。要素にないものは削除される
+            $post->tags()->sync($tagIds);
+            // 要素にないものは削除されないで残る
+            // $post->tags()->syncWithoutDetaching($tagIds);
+        });
 
         // 詳細ページへリダイレクト
         return redirect('/post/' . $id);
@@ -115,6 +138,9 @@ class PostController extends Controller
                 // foreach ($post->attachments() as $attachment) {  // こっちだとダメだった。なぜ？
                 $attachment->delete();
             }
+
+            // 引数なしだとすべての多対多の関連が解除される
+            $post->tags()->detach();
 
             $post->delete();
         });

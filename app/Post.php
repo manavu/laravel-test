@@ -20,4 +20,13 @@ class Post extends Model
     {
         return $this->hasMany('App\Attachment');
     }
+
+    /**
+     * タグを取得
+     */
+    public function tags()
+    {
+        // 多対多の関連
+        return $this->belongsToMany('App\Tag');
+    }
 }

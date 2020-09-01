@@ -11,7 +11,7 @@
             {{ Html::link('/post', '一覧へ') }}
         </div>
     </div>
-    <div class="row">
+    <div class="form-row">
         <div class="col-md-12">
             {!! Form::open(['action' => ['PostController@update', $post->id], 'method' => 'put']) !!}
             <div class="form-group">
@@ -26,9 +26,20 @@
                 {{ Html::linkAction('AttachmentController@show', $attachment->name, [$attachment->id]) }}
             </div>
             @endforeach
-            {!! Form::submit('更新', ['class' => 'btn btn-primary btn-block']) !!}
-            {!! Form::close() !!}
+            {{-- @for ディレクティブを使用するとフォーマッターが原因で微妙にずれる --}}
+            @for($i = 0; $i < 3; $i++) <div class="form-group">
+                @php
+                // この方法ではクエリがループの回数だけ呼ばれてしまうので別な方法がよい
+                $tag = $post->tags()->skip($i)->first();
+                $defaultValue = is_null($tag) ? null : $tag->id;
+                @endphp
+                {!! Form::label('tags[]', 'タグ:') !!}
+                {!! Form::select('tags[]', $tags, $defaultValue, ['placeholder' => 'タグを選択してください']) !!}
         </div>
+        @endfor
+        {!! Form::submit('更新', ['class' => 'btn btn-primary btn-block']) !!}
+        {!! Form::close() !!}
     </div>
+</div>
 </div>
 @endsection
