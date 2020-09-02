@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Post;
-use App\Attachment;
 use App\Tag;
+use App\Services\IPostService;
 
 class PostController extends Controller
 {
+    // private $postService = null;
+
     public function __construct()
+    // public function __construct(IPostService $postService)
     {
         // 認証ありのコントローラー
         $this->middleware('auth');
@@ -52,7 +54,7 @@ class PostController extends Controller
 
         /*      
         // こういうやり方もあるっぽい
-        // バリデーターにルールとインプットを入れる
+        // バリデーターにリクエスト内容とルールを入れる
         $validation = Validator::make($request, $rules);
 
         // バリデーションチェックを行う
@@ -60,39 +62,8 @@ class PostController extends Controller
             return redirect('/')->with('message', 'ファイルを確認してください！');
         }
  */
-        DB::transaction(function () use ($request) {
-            // モデルからインスタンスを生成
-            $post = new Post;
-
-            // $requestにformからのデータが格納されているので、以下のようにそれぞれ代入する
-            $post->context = $request->context;
-
-            // 保存
-            $post->save();
-
-            foreach ($request->files as $file) {
-                $attachment = new Attachment();
-                $attachment->data = $file;
-                $attachment->name = $file->getClientOriginalName();
-                $attachment->contentType = $file->getClientMimeType();  // mimeType は直接アクセスできない
-                $attachment->size = $file->getClientSize();
-                $attachment->postId = $post->id;
-
-                $attachment->save();
-                // $post->attachments()->save($attachment);
-                // $post->attachments()->saveMany([$attachment]);
-            }
-
-            $tagIds = array_filter($request->tags, function ($tagId) {
-                return !is_null($tagId);
-            });
-
-            // タグの関連を結ぶ。要素にないものは削除される
-            $post->tags()->sync($tagIds);
-
-            // transaction メソッドの戻り値として返すことができる
-            // return $value;
-        });
+        $service = app()->make(IPostService::class);
+        $service->create($request);
 
         // 保存後 一覧ページへリダイレクト
         return redirect('/post');
@@ -108,21 +79,8 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
-        // バリデーションを共有するための方法を考える必要がある
-        DB::transaction(function () use ($request, $id) {
-            $post = Post::find($id);
-            $post->context = $request->context;
-            $post->save();
-
-            $tagIds = array_filter($request->tags, function ($tagId) {
-                return !is_null($tagId);
-            });
-
-            // タグの関連を結ぶ。要素にないものは削除される
-            $post->tags()->sync($tagIds);
-            // 要素にないものは削除されないで残る
-            // $post->tags()->syncWithoutDetaching($tagIds);
-        });
+        $service = app()->make(IPostService::class);
+        $service->update($request, (int)$id);
 
         // 詳細ページへリダイレクト
         return redirect('/post/' . $id);
@@ -130,20 +88,8 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        DB::transaction(function () use ($id) {
-            $post = Post::find($id);
-
-            // EF みたいに勝手にやってくれないので、モデル側のトリガーで定義するか、 DB でカスケードの設定をするとよいかも
-            foreach ($post->attachments()->get() as $attachment) {
-                // foreach ($post->attachments() as $attachment) {  // こっちだとダメだった。なぜ？
-                $attachment->delete();
-            }
-
-            // 引数なしだとすべての多対多の関連が解除される
-            $post->tags()->detach();
-
-            $post->delete();
-        });
+        $service = app()->make(IPostService::class);
+        $service->delete((int)$id);
 
         // 一覧にリダイレクト
         return redirect('/post');

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\IPostService;
+use App\Services\PostService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +15,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        // コンテナからサービスを取得するためにインターフェースと具象をバインド
+        // $this->app->bind(IPostService::class, PostService::class);
+        $this->app->bind(IPostService::class, function ($app) {
+            return new PostService();
+        });
+
+        // 使いたい場合は、$service = $app->make(IPostService::class);
     }
 
     /**
