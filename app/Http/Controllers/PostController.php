@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Post;
 use App\Tag;
 use App\Services\IPostService;
+use App\Http\Requests\StorePost;
 
 class PostController extends Controller
 {
@@ -36,8 +37,16 @@ class PostController extends Controller
         return view('post/create', compact('tags'));
     }
 
-    public function store(Request $request)
+    public function store(StorePost $request)
+    // public function store(Request $request)
     {
+        // フォームリクエストを作るとメソッドが呼び出される前にバリデーションルールが適応される
+        // バリデーションに失敗した場合はリダイレクトされる
+        // エラー内容はセッションに保持されるので、@error ディレクティブを使うことでレンダリング可能
+        // form ファサードを使うと、old ヘルパーを使わないでも以前の値がレンダリングされるっぽい
+
+        /*
+        // 簡単に使用する場合はこの書き方でもOK
         $validateRules = [
             'context' => 'required|max:10',
         ];
@@ -47,10 +56,8 @@ class PostController extends Controller
             "context.max" => "10文字以内で入力してください。"
         ];
 
-        // バリデーションに失敗した場合はリダイレクトされる
-        // エラー内容はセッションに保持されるので、@error ディレクティブを使うことでレンダリング可能
-        // form ファサードを使うと、old ヘルパーを使わないでも以前の値がレンダリングされるっぽい
         $this->validate($request, $validateRules, $validateMessages);
+        */
 
         /*      
         // こういうやり方もあるっぽい
@@ -77,7 +84,7 @@ class PostController extends Controller
         return view('post/edit', ['post' => $post, 'tags' => $tags]);
     }
 
-    public function update(Request $request, $id)
+    public function update(StorePost $request, $id)
     {
         $service = app()->make(IPostService::class);
         $service->update($request, (int)$id);
