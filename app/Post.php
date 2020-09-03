@@ -3,9 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Post extends Model
 {
+    use Sortable;   // ソート可能にするためのトレイト
+
+    public $sortable = ['id', 'context', 'created_at'];    // ソート対象カラム追加
+
     protected $dates = ['created_at'];
 
     // 更新を行ってはいけない列

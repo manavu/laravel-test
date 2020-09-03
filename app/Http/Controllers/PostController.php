@@ -23,8 +23,11 @@ class PostController extends Controller
 
     public function index()
     {
-        // DBよりpostsテーブルの値を全て取得
-        $posts = Post::all();
+        // DBよりpostsテーブルの値をページネーションの形式で取得
+        $posts = Post::sortable()->paginate(15);    // 一ページ辺り15件
+
+        // こんな感じでも実装は可能だと思うが素直に使ったほうがよいだろう
+        // $posts = Post::skip($request->page * 15)->take(15)->get();
 
         // 取得した値をビュー「post/index」に渡す
         return view('post/index', compact('posts'));

@@ -15,12 +15,16 @@
         <div class="col-md-12">
             <table class="table">
                 <tr>
-                    <th>内容</th>
-                    <th>作成日時</th>
+                    <th>@sortablelink('id', 'ID', ['parameter' => 'smile'], ['rel' => 'nofollow']) </th>
+                    <th>@sortablelink('context', '内容', ['parameter' => 'smile'], ['rel' => 'nofollow']) </th>
+                    <th>@sortablelink('created_at', '作成日時', ['parameter' => 'smile'], ['rel' => 'nofollow']) </th>
                     <th>操作</th>
                 </tr>
                 @forelse ($posts as $post)
                 <tr>
+                    <td>
+                        {{ $post->id }}
+                    </td>
                     <td>
                         {{ $post->context }}
                     </td>
@@ -42,6 +46,11 @@
                 </tr>
                 @endforelse
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ $posts->appends(request()->query())->links() }}
         </div>
     </div>
 </div>
