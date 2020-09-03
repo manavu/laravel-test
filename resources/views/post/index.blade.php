@@ -13,6 +13,17 @@
     </div>
     <div class="row">
         <div class="col-md-12">
+            {{ Form::open(['url' => 'post', 'method' => 'get', 'class' => 'form-inline']) }}
+            <div class="form-group">
+                {{ Form::label('keyword', '検索条件') }}
+                {{ Form::text('keyword', $keyword, ['class' => 'form-control', 'placeholder' => '内容を入力']) }}
+            </div>
+            <button class="btn btn-primary" type="submit">検索</button>
+            {{ Form::close() }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <table class="table">
                 <tr>
                     <th>@sortablelink('id', 'ID', ['parameter' => 'smile'], ['rel' => 'nofollow']) </th>

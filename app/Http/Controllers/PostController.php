@@ -21,16 +21,35 @@ class PostController extends Controller
         // $this->middleware('guest')->except('create');
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $keyword = $request->input('keyword', session('keyword'));
+        session(['keyword' => $keyword]);
+
+        $posts = Post::query();
+
+        // 引数があれば検索条件を追加していく
+        if (!empty($keyword)) {
+            // 空白区切りの単語配列に変換する
+            $keywords = explode(' ', str_replace(['　'], ' ', $keyword));
+
+            // or で検索条件を追加する
+            $posts = $posts->where(function ($query) use ($keywords) {
+                foreach ($keywords as $word) {
+                    $posts = $query->orWhere('context', 'like', '%' . $word . '%');
+                }
+            });
+        }
+
         // DBよりpostsテーブルの値をページネーションの形式で取得
-        $posts = Post::sortable()->paginate(15);    // 一ページ辺り15件
+        $posts = $posts->paginate(15);    // 一ページ辺り15件
 
         // こんな感じでも実装は可能だと思うが素直に使ったほうがよいだろう
         // $posts = Post::skip($request->page * 15)->take(15)->get();
 
         // 取得した値をビュー「post/index」に渡す
-        return view('post/index', compact('posts'));
+        return view('post/index', ['posts' => $posts, 'keyword' => $keyword]);
+        // return view('post/index', compact('posts'));
     }
 
     public function create()
