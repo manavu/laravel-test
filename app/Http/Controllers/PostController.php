@@ -36,7 +36,11 @@ class PostController extends Controller
             // or で検索条件を追加する
             $posts = $posts->where(function ($query) use ($keywords) {
                 foreach ($keywords as $word) {
-                    $posts = $query->orWhere('context', 'like', '%' . $word . '%');
+                    $query = $query->orWhere('context', 'like', '%' . $word . '%');
+                    // 関連先の tag の name で条件を追加する
+                    $query = $query->orWhereHas('tags', function ($query) use ($word) {
+                        $query = $query->where('name', 'like', '%' . $word . '%');
+                    });
                 }
             });
         }
