@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kyslik\ColumnSortable\Sortable;
 
 class Post extends Model
@@ -21,7 +23,7 @@ class Post extends Model
     /**
      * アタッチメントを取得
      */
-    public function attachments()
+    public function attachments(): HasMany
     {
         return $this->hasMany('App\Attachment');
     }
@@ -29,7 +31,7 @@ class Post extends Model
     /**
      * タグを取得
      */
-    public function tags()
+    public function tags(): BelongsToMany
     {
         // 多対多の関連
         return $this->belongsToMany('App\Tag');

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Webpatser\Uuid\Uuid;    // uuid を使用するので
 
 class Attachment extends Model
@@ -54,7 +55,7 @@ class Attachment extends Model
     /**
      * このアタッチメントを所有するポストを取得
      */
-    public function post()
+    public function post(): BelongsTo
     {
         // post_id が foreign_key となる。変えたい場合は、第二引数に列名を指定する
         return $this->belongsTo('App\Post');

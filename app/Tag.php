@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Tag extends Model
 {
@@ -11,7 +13,7 @@ class Tag extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder $query
      */
-    public static function scopeList($query)
+    public static function scopeList(Builder $query): Builder
     {
         // select タグ用のリスト表示の結果だけを返す
         return $query->select(['id', 'name']);
@@ -20,7 +22,7 @@ class Tag extends Model
     /**
      * 記事を取得
      */
-    public function posts()
+    public function posts(): BelongsToMany
     {
         // 多対多の関連
         return $this->belongsToMany('App\Post');
