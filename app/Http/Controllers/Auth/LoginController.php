@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -35,5 +37,21 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        // トレイトで定義されている認証後に呼ばれる
+
+        // api トークンを再生成する
+        $user->update(['api_token' => Str::random(60)]);
+    }
+
+    protected function loggedOut(Request $request)
+    {
+        // トレイトで定義されているログアウト後に呼ばれる
+        /*
+        $user = $request->user();
+        $user->update(['api_token' => null]);*/
     }
 }

@@ -44,17 +44,17 @@
 {{ Form::close() }}
 <script type="module">
     $(function () {
-        // csrf 用のトークンを送るようにする
-        /* $.ajaxSetup({
+        // 認証用のトークンを送るようにする
+        $.ajaxSetup({
             headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                'Authorization': 'Bearer {{ \Auth::user()->api_token }}'
             }
-        });*/
+        });
 
         $('#tag_register_button').click(function (e) {
             e.preventDefault();
 
-            // フォームの内容を取得し
+            // タグ登録の api を実行する
             $.post('/api/tag', $('#tag_register').serialize())
                 .done(function (data) {
                     $('select').each(function (index, element) {
