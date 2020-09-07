@@ -35,5 +35,40 @@
         {!! Form::close() !!}
     </div>
 </div>
+{{ Form::open(['id' => 'tag_register', 'class' => '']) }}
+<div class="form-group">
+    {{ Form::label('tagName', 'タグ名:') }}
+    {{ Form::text('tagName', '', ['class' => 'form-control', 'placeholder' => ''] ) }}
+</div>
+<button id="tag_register_button" class="btn btn-primary" type="button">タグ登録</button>
+{{ Form::close() }}
+<script type="module">
+    $(function () {
+        // csrf 用のトークンを送るようにする
+        /* $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });*/
+
+        $('#tag_register_button').click(function (e) {
+            e.preventDefault();
+
+            // フォームの内容を取得し
+            $.post('/api/tag', $('#tag_register').serialize())
+                .done(function (data) {
+                    $('select').each(function (index, element) {
+                        let opt = $('<option>').text(data.name).val(data.id);
+                        // element.append(opt);  // こっちだとうまくいかないな。なぜだ
+                        opt.appendTo(element);
+                    });
+
+                    $('#tagName').val('');
+                }).fail(function (data) {
+                    alert('失敗');
+                });
+        })
+    });
+</script>
 </div>
 @endsection

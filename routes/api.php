@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/
+
+// Route::middleware('auth:api')->get('/test', 'Api\TestApiController@index');
+Route::get('/tag', 'Api\TagApiController@index');
+Route::post('/tag', 'Api\TagApiController@store');
