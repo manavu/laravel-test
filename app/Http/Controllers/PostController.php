@@ -8,6 +8,8 @@ use App\Tag;
 use App\Services\IPostService;
 use App\Http\Requests\StorePost;
 
+use Illuminate\Support\Facades\Auth;
+
 class PostController extends Controller
 {
     // private $postService = null;

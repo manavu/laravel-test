@@ -22,6 +22,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // 使いたい場合は、$service = $app->make(IPostService::class);
+
+        // Auth0 用のユーザーリポジトリをバインド
+        $this->app->bind(
+            \Auth0\Login\Contract\Auth0UserRepository::class,
+            \Auth0\Login\Repository\Auth0UserRepository::class
+        );
     }
 
     /**

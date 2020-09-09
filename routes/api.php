@@ -20,5 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 // Route::get('/test', 'Api\TagApiController@index');
-Route::middleware('auth:api')->get('/tag', 'Api\TagApiController@index');
-Route::middleware('auth:api')->post('/tag', 'Api\TagApiController@store');
+Route::middleware('jwt')->get('/tag', 'Api\TagApiController@index');
+Route::middleware('jwt')->post('/tag', 'Api\TagApiController@store');

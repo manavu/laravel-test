@@ -47,7 +47,7 @@
         // 認証用のトークンを送るようにする
         $.ajaxSetup({
             headers: {
-                'Authorization': 'Bearer {{ \Auth::user()->api_token }}'
+                'Authorization': 'Bearer {{ \Auth::user()->getAuthPassword() }}'
             }
         });
 
