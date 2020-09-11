@@ -4,8 +4,8 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Post;
-use App\Attachment;
+use App\Models\Post;
+use App\Models\Attachment;
 
 class PostService implements IPostService
 {

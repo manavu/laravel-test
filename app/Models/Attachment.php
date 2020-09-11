@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,7 +58,7 @@ class Attachment extends Model
     public function post(): BelongsTo
     {
         // post_id が foreign_key となる。変えたい場合は、第二引数に列名を指定する
-        return $this->belongsTo('App\Post');
+        return $this->belongsTo(Post::class);
     }
 
     protected static function boot()

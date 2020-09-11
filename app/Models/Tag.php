@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +25,6 @@ class Tag extends Model
     public function posts(): BelongsToMany
     {
         // 多対多の関連
-        return $this->belongsToMany('App\Post');
+        return $this->belongsToMany(Post::class);
     }
 }

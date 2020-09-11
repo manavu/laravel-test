@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,7 +25,7 @@ class Post extends Model
      */
     public function attachments(): HasMany
     {
-        return $this->hasMany('App\Attachment');
+        return $this->hasMany(Attachment::class);
     }
 
     /**
@@ -34,6 +34,6 @@ class Post extends Model
     public function tags(): BelongsToMany
     {
         // 多対多の関連
-        return $this->belongsToMany('App\Tag');
+        return $this->belongsToMany(Tag::class);
     }
 }
