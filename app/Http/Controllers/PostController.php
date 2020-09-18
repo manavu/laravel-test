@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
-use App\Models\Tag;
+use App\Models\Cast;
+use App\Models\Genre;
 use App\Services\IPostService;
 use App\Http\Requests\StorePost;
 
@@ -58,9 +59,10 @@ class PostController extends Controller
 
     public function create()
     {
-        $tags = Tag::list()->pluck('name', 'id');
+        $casts = Cast::list()->pluck('name', 'id');
+        $genres = Genre::list()->pluck('name', 'id');
 
-        return view('post/create', compact('tags'));
+        return view('post/create', compact('casts', 'genres'));
     }
 
     public function store(StorePost $request)
@@ -98,22 +100,30 @@ class PostController extends Controller
         $service = app()->make(IPostService::class);
         $service->create($request);
 
+        session()->flash('flashMessage', '投稿が完了しました');
+
         // 保存後 一覧ページへリダイレクト
         return redirect('/post');
     }
 
     public function edit($id)
     {
-        $post = Post::find($id);
-        $tags = Tag::list()->pluck('name', 'id');
+        // 関連を事前に読み込んでおくことで無駄なクエリ発行を減らす
+        $post = Post::with(['genres', 'casts'])->find($id);
+        // $tags = Tag::list()->pluck('name', 'id');
 
-        return view('post/edit', ['post' => $post, 'tags' => $tags]);
+        $casts = Cast::list()->pluck('name', 'id');
+        $genres = Genre::list()->pluck('name', 'id');
+
+        return view('post/edit', ['post' => $post, 'casts' => $casts, 'genres' => $genres]);
     }
 
     public function update(StorePost $request, $id)
     {
         $service = app()->make(IPostService::class);
         $service->update($request, (int)$id);
+
+        session()->flash('flashMessage', '更新が完了しました');
 
         // 詳細ページへリダイレクト
         return redirect('/post/' . $id);

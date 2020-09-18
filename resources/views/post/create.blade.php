@@ -11,64 +11,45 @@
             {{ Html::link('/post', '一覧へ')}}
         </div>
     </div>
-    <div class="form-row">
-        <div class="col-md-12">
-            {!! Form::open(['url' => 'post', 'method' => 'post', 'files' => true]) !!}
-            <div class="form-group">
-                {!! Form::label('context', '内容:') !!}
-                {!! Form::text('context', '', ['class' => 'form-control', 'placeholder' => ''] ) !!}
-                @error('context')
-                <div class="alert alert-danger">{{ $message }}</div>
-                @enderror
-            </div>
-            <div class="form-group">
-                {!! Form::label('image', '添付ファイル:') !!}
-                {!! Form::file('image') !!}
-            </div>
-            {{-- @for ディレクティブを使用するとフォーマッターが原因で微妙にずれる --}}
-            @for($i = 0; $i < 3; $i++) <div class="form-group">
-                {!! Form::label('tags[]', 'タグ:') !!}
-                {!! Form::select('tags[]', $tags, null, ['placeholder' => 'タグを選択してください']) !!}
-        </div>
-        @endfor
-        {!! Form::submit('作成', ['class' => 'btn btn-primary btn-block']) !!}
-        {!! Form::close() !!}
+
+    {{ Form::open(['url' => 'post', 'method' => 'post', 'files' => true]) }}
+    <div class="form-group form-row">
+        {{ Form::label('context', '内容:') }}
+        {{ Form::text('context', '', ['class' => 'form-control', 'placeholder' => ''] ) }}
+        @error('context')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @enderror
     </div>
+    <div class="form-group form-row">
+        {{ Form::label('image', '添付ファイル:') }}
+        {{ Form::file('image') }}
+    </div>
+    <div class="form-row">
+        {{-- @for ディレクティブを使用するとフォーマッターが原因で微妙にずれる --}}
+        @for ($i = 0; $i < 4; $i++) <div class="form-group col-md-3">
+            {{ Form::label('tags[]', 'ジャンル:') }}
+            {{ Form::select('tags[]', $genres, '', ['class'=> 'form-control', 'placeholder' => 'ジャンルを選択してください']) }}
+    </div>
+    @endfor
 </div>
-{{ Form::open(['id' => 'tag_register', 'class' => '']) }}
-<div class="form-group">
-    {{ Form::label('tagName', 'タグ名:') }}
-    {{ Form::text('tagName', '', ['class' => 'form-control', 'placeholder' => ''] ) }}
+<div class="form-row">
+    @for ($i = 0; $i < 4; $i++) <div class="form-group col-md-3">
+        {{ Form::label('tags[]', '出演者:') }}
+        {{ Form::select('tags[]', $casts, '', ['class'=> 'form-control', 'placeholder' => '出演者を選択してください']) }}
 </div>
-<button id="tag_register_button" class="btn btn-primary" type="button">タグ登録</button>
+@endfor
+</div>
+
+<div class="form-group row">
+    {{ Form::submit('作成', ['class' => 'btn btn-primary btn-block']) }}
+</div>
 {{ Form::close() }}
+</div>
 <script type="module">
     $(function () {
-        // 認証用のトークンを送るようにする
-        $.ajaxSetup({
-            headers: {
-                'Authorization': 'Bearer {{ \Auth::user()->api_token }}'
-            }
+        $('form').submit(function () {
+            $('input[type=submit]').addClass("disabled");
         });
-
-        $('#tag_register_button').click(function (e) {
-            e.preventDefault();
-
-            // タグ登録の api を実行する
-            $.post('/api/tag', $('#tag_register').serialize())
-                .done(function (data) {
-                    $('select').each(function (index, element) {
-                        let opt = $('<option>').text(data.name).val(data.id);
-                        // element.append(opt);  // こっちだとうまくいかないな。なぜだ
-                        opt.appendTo(element);
-                    });
-
-                    $('#tagName').val('');
-                }).fail(function (data) {
-                    alert('失敗');
-                });
-        })
     });
 </script>
-</div>
 @endsection

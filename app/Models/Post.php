@@ -36,4 +36,14 @@ class Post extends Model
         // 多対多の関連
         return $this->belongsToMany(Tag::class);
     }
+
+    public function casts(): BelongsToMany
+    {
+        return $this->belongsToMany(Cast::class, 'post_tag', 'post_id', 'tag_id');
+    }
+
+    public function genres(): BelongsToMany
+    {
+        return $this->belongsToMany(Genre::class, 'post_tag', 'post_id', 'tag_id');
+    }
 }
