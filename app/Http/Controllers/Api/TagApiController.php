@@ -13,11 +13,14 @@ class TagApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $modelName = ucfirst($request->type);
+        $tags = app('App\Models\\' . $modelName)->all();
+
         // api のルーティングのコントローラーなので自動で json に変換される
         // 連想配列も同じように変換される
-        return Tag::all();
+        return $tags;
     }
 
     /**

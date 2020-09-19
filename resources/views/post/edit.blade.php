@@ -26,46 +26,84 @@
     @endforeach
 
     @php
-    $selectedGenres = $post->genres->take(4);
+    $selectedGenres = $post->genres->all();
     @endphp
-    <div class="form-row">
-        {{-- @for ディレクティブを使用するとフォーマッターが原因で微妙にずれる --}}
-        @for ($i = 0; $i < 4; $i++) <div class="form-group col-md-3">
-            {{ Form::label('genres[]', 'ジャンル:') }}
-            @if ($i < $selectedGenres->count())
-                {{ Form::select('tags[]', $genres, $selectedGenres[$i]->id, ['class'=> 'form-control', 'placeholder' => 'ジャンルを選択してください']) }}
-                @else
-                {{ Form::select('tags[]', $genres, '', ['class'=> 'form-control', 'placeholder' => 'ジャンルを選択してください']) }}
-                @endif
-    </div>
-    @endfor
-</div>
-
-@php
-$selectedCasts = $post->casts->take(4);
-@endphp
-<div class="form-row">
-    @for ($i = 0; $i < 4; $i++) <div class="form-group col-md-3">
-        {{ Form::label('genres[]', '出演者:') }}
-        @if ($i < $selectedCasts->count())
-            {{ Form::select('tags[]', $casts, $selectedCasts[$i]->id, ['class'=> 'form-control', 'placeholder' => '出演者を選択してください']) }}
-            @else
-            {{ Form::select('tags[]', $casts, '', ['class'=> 'form-control', 'placeholder' => '出演者を選択してください']) }}
-            @endif
-</div>
-@endfor
-</div>
-
-<div class="form-group row">
+    <fieldset class="py-2">
+        <div class="form-row" data-tag="genres">
+            @foreach($selectedGenres as $selectedGenre)
+            <div class="form-group col-md-3">
+                {{ Form::label('tags[]', 'ジャンル:') }}
+                {{ Form::select('tags[]', $genres, $selectedGenre->id, ['class'=> 'form-control', 'placeholder' => 'ジャンルを選択してください']) }}
+            </div>
+            @endforeach
+        </div>
+        <button id="genre_adding_button" class="btn btn-primary" type="button">ジャンル追加</button>
+    </fieldset>
+    @php
+    $selectedCasts = $post->casts->all();
+    @endphp
+    <fieldset class="py-2">
+        <div class="form-row" data-tag="casts">
+            @foreach($selectedCasts as $selectedCast)
+            <div class="form-group col-md-3">
+                {{ Form::label('tags[]', '出演者:') }}
+                {{ Form::select('tags[]', $casts, $selectedCast->id, ['class'=> 'form-control', 'placeholder' => '出演者を選択してください']) }}
+            </div>
+            @endforeach
+        </div>
+        <button id="cast_adding_button" class="btn btn-primary" type="button">出演者追加</button>
+    </fieldset>
     {{ Form::submit('更新', ['class' => 'btn btn-primary btn-block']) }}
-</div>
-{{ Form::close() }}
-
+    {{ Form::close() }}
 </div>
 <script type="module">
     $(function () {
         $('form').submit(function () {
             $('input[type=submit]').addClass("disabled");
+        });
+
+        // 認証用のトークンを送るようにする
+        $.ajaxSetup({
+            headers: {
+                'Authorization': 'Bearer {{ \Auth::user()->api_token }}'
+            }
+        });
+
+        $('#cast_adding_button').click(function (e) {
+            e.preventDefault();
+
+            // タグ枠を追加
+            $.get('/api/tag?type=cast').done(function (data) {
+                let tagSelect = $('<select class="form-control">').attr('name', 'tags[]');
+                tagSelect.append($('<option>').text('出演者を選択してください'));
+                data.forEach(function (datum) {
+                    let opt = $('<option>').text(datum.name).val(datum.id);
+                    opt.appendTo(tagSelect);
+                });
+
+                let node = $('<div class="form-group col-md-3">');
+                node.append($('<label>').attr('for', 'tags[]').text('出演者:'));
+                node.append(tagSelect);
+                $('[data-tag="casts"]').append(node);
+            });
+        });
+
+        $('#genre_adding_button').click(function (e) {
+            e.preventDefault();
+
+            $.get('/api/tag?type=genre').done(function (data) {
+                let tagSelect = $('<select class="form-control">').attr('name', 'tags[]');
+                tagSelect.append($('<option>').text('ジャンルを選択してください'));
+                data.forEach(function (datum) {
+                    let opt = $('<option>').text(datum.name).val(datum.id);
+                    opt.appendTo(tagSelect);
+                });
+
+                let node = $('<div class="form-group col-md-3">');
+                node.append($('<label>').attr('for', 'tags[]').text('ジャンル:'));
+                node.append(tagSelect);
+                $('[data-tag="genres"]').append(node);
+            });
         });
     });
 </script>
