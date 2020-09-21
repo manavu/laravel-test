@@ -1,5 +1,9 @@
 @extends('layouts/app')
 @section('content')
+
+{{-- 第一引数にバリデーションルールが入ったリクエストクラス、第二引数に jQuery のセレクターを渡すことができる --}}
+{!! JsValidator::formRequest('App\Http\Requests\StorePost') !!}
+
 <div class="container ops-main">
     <div class="row">
         <div class="col-md-12">

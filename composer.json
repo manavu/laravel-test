@@ -15,6 +15,7 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^5.8",
         "nanigans/single-table-inheritance": "^0.8.8",
+        "proengsoft/laravel-jsvalidation": "4.3.*",
         "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
