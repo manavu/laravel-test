@@ -71,7 +71,7 @@
             // タグ枠を追加
             $.get('/api/tag?type=cast').done(function (data) {
                 let tagSelect = $('<select class="form-control">').attr('name', 'tags[]');
-                tagSelect.append($('<option>').text('出演者を選択してください'));
+                tagSelect.append($('<option>').text('出演者を選択してください').val(''));
                 data.forEach(function (datum) {
                     let opt = $('<option>').text(datum.name).val(datum.id);
                     opt.appendTo(tagSelect);
@@ -89,7 +89,7 @@
 
             $.get('/api/tag?type=genre').done(function (data) {
                 let tagSelect = $('<select class="form-control">').attr('name', 'tags[]');
-                tagSelect.append($('<option>').text('ジャンルを選択してください'));
+                tagSelect.append($('<option>').text('ジャンルを選択してください').val(''));
                 data.forEach(function (datum) {
                     let opt = $('<option>').text(datum.name).val(datum.id);
                     opt.appendTo(tagSelect);
