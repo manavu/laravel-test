@@ -5,9 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Webpatser\Uuid\Uuid;    // uuid を使用するので
+use App\Traits\CamelCaseAccessible;
 
 class Attachment extends Model
 {
+    use CamelCaseAccessible;
+
     // id 列が UUID なので自動インクリメントを無効にする
     public $incrementing = false;
 
@@ -19,11 +22,6 @@ class Attachment extends Model
      *
      * @return string
      */
-    public function getContentTypeAttribute(): string
-    {
-        return  $this->attributes['content_type'];
-    }
-
     public function getDataAttribute(): string
     {
         return  base64_decode($this->attributes['data']);
@@ -35,17 +33,6 @@ class Attachment extends Model
      * @param [type] $value
      * @return void
      */
-    public function setPostIdAttribute($value)
-    {
-        $this->attributes['post_id'] = $value;
-    }
-
-    public function setContentTypeAttribute($value)
-    {
-        // これがないと、model->contentType = 'image/jpg'; と書くことができないっぽい
-        $this->attributes['content_type'] = $value;
-    }
-
     public function setDataAttribute($value)
     {
         $this->attributes['data'] = base64_encode(file_get_contents($value));

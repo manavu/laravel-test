@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Nanigans\SingleTableInheritance\SingleTableInheritanceTrait;
+use App\Traits\CamelCaseAccessible;
 
 class Tag extends Model
 {
+    use CamelCaseAccessible;
     // 一つのテーブルを使って継承を表現するためのトレイト
     use SingleTableInheritanceTrait;
 

@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Kyslik\ColumnSortable\Sortable;
 use Reshadman\OptimisticLocking\OptimisticLocking;
+use App\Traits\CamelCaseAccessible;
 
 class Post extends Model
 {
+    use CamelCaseAccessible;
     use OptimisticLocking;  // 同時実行制御を可能にするためのトレイト
     use Sortable;   // ソート可能にするためのトレイト
 
@@ -34,16 +36,6 @@ class Post extends Model
 
         // 必須プロパティなので初期化
         $this->lockVersion = 0;
-    }
-
-    public function getLockVersionAttribute(): int
-    {
-        return  (int)$this->attributes['lock_version'];
-    }
-
-    public function setLockVersionAttribute($value)
-    {
-        $this->attributes['lock_version'] = $value;
     }
 
     /**
