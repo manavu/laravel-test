@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "861adb1e765949b2aa198557f4a7a0d4",
+    "content-hash": "fe65086f4d8b374dfb680fba0d29697b",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1770,6 +1770,50 @@
                 "uuid"
             ],
             "time": "2020-02-21T04:36:14+00:00"
+        },
+        {
+            "name": "reshadman/laravel-optimistic-locking",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reshadman/laravel-optimistic-locking.git",
+                "reference": "1aa264abc2ecb0ed734fb1a42f2d79bff2c85ccd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reshadman/laravel-optimistic-locking/zipball/1aa264abc2ecb0ed734fb1a42f2d79bff2c85ccd",
+                "reference": "1aa264abc2ecb0ed734fb1a42f2d79bff2c85ccd",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0",
+                "illuminate/support": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|^6.0",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "ext-pdo_sqlite": "*",
+                "mockery/mockery": "^1.0.0",
+                "orchestra/testbench": "~3.5.0|~3.6.0|~3.8.0|^4.0|^5.0",
+                "phpunit/phpunit": "^7.0|^8.0|^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Reshadman\\OptimisticLocking\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Reza Shadman",
+                    "email": "pcfeeler@gmail.com"
+                }
+            ],
+            "description": "Adds optimistic locking feature to eloquent models.",
+            "time": "2020-04-21T23:15:53+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -5892,7 +5936,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "reshadman/laravel-optimistic-locking": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -21,7 +21,6 @@ class Attachment extends Model
      */
     public function getContentTypeAttribute(): string
     {
-        // これがないと、model->contentType = 'image/jpg'; と書くことができないっぽい
         return  $this->attributes['content_type'];
     }
 
@@ -43,6 +42,7 @@ class Attachment extends Model
 
     public function setContentTypeAttribute($value)
     {
+        // これがないと、model->contentType = 'image/jpg'; と書くことができないっぽい
         $this->attributes['content_type'] = $value;
     }
 

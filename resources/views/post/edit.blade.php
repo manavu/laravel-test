@@ -16,6 +16,7 @@
         </div>
     </div>
     {{ Form::open(['action' => ['PostController@update', $post->id], 'method' => 'put']) }}
+    {{ Form::hidden('lockVersion', $post->lockVersion) }}
     <div class="form-group form-row">
         {{ Form::label('context', '内容:') }}
         {{ Form::text('context', $post->context, ['class' => 'form-control', 'placeholder' => ''] ) }}

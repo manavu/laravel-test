@@ -51,6 +51,7 @@ class PostService implements IPostService
         DB::transaction(function () use ($request, $id) {
             $post = Post::find($id);
             $post->context = $request->context;
+            $post->lockVersion = $request->lockVersion;
             $post->save();
 
             $tagIds = array_filter($request->tags, function ($tagId) {
